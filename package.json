@@ -3,7 +3,8 @@
   "version": "0.1.0",
   "description": "Opt-in Maestro E2E harness for mobile apps: device/network detection, OEM profiles, cheap runs, short reports.",
   "type": "module",
-  "bin": { "mh": "bin/mh.mjs" },
+  "bin": { "mh": "bin/mh.mjs", "maestro-harness": "bin/mh.mjs" },
+  "files": ["bin", "src", "profiles", "common-tests", "templates", "skills", "agents", ".claude-plugin", "README.md"],
   "engines": { "node": ">=18" },
   "license": "MIT"
 }

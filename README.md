@@ -2,15 +2,25 @@
 
 Harness **opt-in** para pruebas E2E con [Maestro](https://maestro.dev) en celulares Android reales. Agnóstico de proyecto, SO (mac/win/linux), dispositivo y red. Node ≥ 18, sin dependencias npm.
 
-## Instalar
+## Instalar en un proyecto (un comando)
 ```bash
-# 1. Maestro + adb (platform-tools) + Node 18+
-# 2. Como plugin de Claude Code
-/plugin marketplace add <git-url-de-este-repo>
-/plugin install maestro-harness@maestro-harness
-# 3. CLI (opcional): npm link   # expone `mh`
+cd mi-proyecto
+npx github:<org>/maestro-harness setup     # o: npx ./maestro-harness-0.1.0.tgz setup
 ```
-En el proyecto: `mh init`, editar `maestro-harness.json`, `mh doctor`.
+`setup` revisa requisitos (Node 18+, Maestro, adb, Java) con el comando de instalación de lo que falte, detecta appId/scheme/Metro de tu `app.json`, crea `maestro-harness.json` y `test/maestro/` con un test de prueba, ofrece instalar la skill y agentes de Claude Code en `.claude/`, ofrece registrar el MCP de Maestro, explica cómo funciona y pregunta si querés correr el test de prueba ahora. `--yes` acepta todo sin preguntar (CI/scripts).
+
+Uso diario sin instalar nada global: `npx github:<org>/maestro-harness doctor|run …`. Con `npm link` (o `npm i -g`) queda como `mh`.
+
+### Como plugin de Claude Code (alternativa)
+```
+/plugin marketplace add <git-url>
+/plugin install maestro-harness@maestro-harness
+```
+
+### Compartirlo
+- Por git: subir este repo y pasar el `npx github:…` de arriba.
+- Sin git: `npm pack` genera `maestro-harness-0.1.0.tgz`; quien lo reciba corre `npx ./maestro-harness-0.1.0.tgz setup`.
+- Registry: `npm publish` y quedaría `npx maestro-harness setup`.
 
 ## Qué resuelve
 - **Dispositivo:** USB primero; si no, recupera por wifi (última IP → mDNS → escaneo de subred), verificando identidad por serial. Cambiar de red no requiere configurar nada.

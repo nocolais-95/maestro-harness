@@ -7,6 +7,7 @@ import { doctor, runFlows } from '../src/run.mjs';
 import * as devices from '../src/devices.mjs';
 import { summarize } from '../src/report.mjs';
 import { loadProfiles } from '../src/profile.mjs';
+import { setup } from '../src/setup.mjs';
 
 const root = path.join(path.dirname(fileURLToPath(import.meta.url)), '..');
 const [cmd, ...rest] = process.argv.slice(2);
@@ -18,6 +19,7 @@ function parse(args) {
     if (a === '-e') { const [k, ...v] = args[++i].split('='); o.env[k] = v.join('='); }
     else if (a === '--device') o.device = args[++i];
     else if (a === '--verbose') o.verbose = true;
+    else if (a === '--yes' || a === '-y') o.yes = true;
     else if (a === '--timeout') o.timeoutMin = Number(args[++i]);
     else o.pos.push(a);
   }
@@ -44,6 +46,7 @@ switch (cmd) {
   }
   case 'report': console.log(summarize(path.resolve(o.pos[0] || '.')).text); break;
   case 'profiles': for (const p of loadProfiles()) console.log(`${p.name}: ${(p.notes || []).join(' | ')}`); break;
+  case 'setup': await setup({ yes: o.yes }); break;
   case 'init': {
     const dir = process.cwd();
     const cfgFile = path.join(dir, 'maestro-harness.json');
@@ -58,6 +61,6 @@ switch (cmd) {
     break;
   }
   default:
-    console.log('mh doctor | run <spec> | devices | report <dir> | profiles | init');
+    console.log('mh setup [--yes] | doctor | run <spec> | devices | report <dir> | profiles | init');
     process.exit(cmd ? 2 : 0);
 }

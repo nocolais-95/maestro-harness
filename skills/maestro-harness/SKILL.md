@@ -37,3 +37,6 @@ y pasar **solo la ruta** al Executor: `mh run task:<ruta>`. Mínimo contexto = m
 - Si `doctor` falla por red: no improvisar; leer su diagnóstico (una línea) y pedir USB una vez.
 - Aviso "Instalar vía USB"/permisos: el harness ya evita reinstalar el driver. Nunca tocar restricciones del teléfono; avisar al usuario.
 - Windows/Linux no están verificados aún; si algo falla en `platform.mjs`, arreglarlo ahí.
+
+## MCP de Maestro (opcional, solo para autorar)
+Si el MCP `maestro` está registrado (`mh setup` lo ofrece), usar `inspect_screen`/`take_screenshot` para ver textos reales al escribir un flow. **No usarlo para ejecutar**: `run` del MCP no pasa `--no-reinstall-driver` ni los flags del perfil; correr siempre con `mh run`.
