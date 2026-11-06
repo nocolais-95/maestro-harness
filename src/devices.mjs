@@ -7,6 +7,9 @@ const adbBin = () => findBin('adb');
 const adb = (args, timeout = 8000) => run(adbBin(), args, { timeout });
 export const sh = (id, cmd, timeout = 8000) => adb(['-s', id, 'shell', cmd], timeout).out.replace(/\r/g, '');
 
+/** Like sh() but keeps stderr and exit code, for diagnostics. */
+export const shx = (id, cmd, timeout = 8000) => adb(['-s', id, 'shell', cmd], timeout);
+
 export function list() {
   return adb(['devices', '-l']).out.split('\n').slice(1).map((l) => l.trim()).filter(Boolean).map((l) => {
     const [id, state] = l.split(/\s+/);
@@ -62,6 +65,10 @@ export async function resolve({ device, wifiAlias = true } = {}) {
   };
 
   if (devs.length) return pick(devs, 'direct');
+  const blocked = list().filter((d) => ['unauthorized', 'authorizing'].includes(d.state));
+  if (blocked.length) {
+    return { error: `${blocked[0].id} está "${blocked[0].state}": desbloqueá el celu y aceptá el diálogo "¿Permitir depuración USB?" (tildá "Siempre"). Si no aparece: adb kill-server y reconectá el cable.` };
+  }
 
   // Recovery ladder (each step short; stop at first verified hit).
   const saved = state.devices[wanted];

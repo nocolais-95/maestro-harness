@@ -59,11 +59,12 @@ appId: \${APP_ID}
 - takeScreenshot: starter-home
 `;
 
-const GUIDE = (tests) => `
+const REPO = 'github:nocolais-95/maestro-harness';
+const GUIDE = (tests, mh) => `
 Cómo funciona
   • Todo es opt-in: nada corre solo. Vos (o tu agente) lo pedís.
-  • mh doctor        → chequea celu (USB/wifi, aunque cambies de red), perfil del fabricante, app, Metro.
-  • mh run <spec>    → doctor + ejecuta + informe corto. <spec> = archivo, carpeta, suite:smoke,
+  • ${mh} doctor        → chequea celu (USB/wifi, aunque cambies de red), perfil del fabricante, app, Metro.
+  • ${mh} run <spec>    → doctor + ejecuta + informe corto. <spec> = archivo, carpeta, suite:smoke,
                        task:<archivo.md> o common:<test> (wifi-off-recovery, rotate, background-resume…).
   • Tus tests viven en ${tests}/flows/<feature>/ y las listas en ${tests}/suites/*.txt
   • En los flows usá \${APP_ID} y \${DEV_CLIENT_URL}; nunca IPs.
@@ -121,15 +122,26 @@ export async function setup({ yes = false, dir = process.cwd() } = {}) {
       cpSync(path.join(root, 'agents'), path.join(dir, '.claude/agents'), { recursive: true });
       console.log('✓ .claude/skills/maestro-harness + .claude/agents');
     }
-    if (findBin('claude') && await confirm('¿Registrar el MCP de Maestro en Claude Code (inspeccionar pantalla al escribir tests)?', false)) {
+    if (findBin('claude') && await confirm('¿Registrar el MCP de Maestro en Claude Code (inspeccionar pantalla al escribir tests)?', true)) {
       const r = run(findBin('claude'), ['mcp', 'add', '-s', 'user', 'maestro', '--', findBin('maestro') || 'maestro', 'mcp'], { timeout: 20000 });
-      console.log(r.code === 0 ? '✓ MCP maestro agregado (reiniciá Claude Code)' : `✗ ${r.err || r.out}`);
+      console.log(r.code === 0 ? '✓ MCP maestro agregado (reiniciá Claude Code)' : /already exists/.test(r.err + r.out) ? '✓ MCP maestro ya estaba registrado' : `✗ ${r.err || r.out}`);
     }
 
-    console.log(GUIDE(rel));
-    if (okReq && await confirm('¿Corro ahora el test de prueba (suite:smoke) con tu celu conectado?', false)) {
+    // `mh` isn't on PATH after npx: expose it as a project script when possible.
+    let mh = findBin('mh') ? 'mh' : `npx ${REPO}`;
+    const pkgFile = path.join(dir, 'package.json');
+    const pkg = readJson(pkgFile);
+    if (mh !== 'mh' && pkg && !pkg.scripts?.mh && await confirm('¿Agregar el script "mh" a package.json (para usar `yarn mh doctor` / `npm run mh -- doctor`)?', true)) {
+      pkg.scripts = { ...(pkg.scripts || {}), mh: `npx --yes ${REPO}` };
+      writeFileSync(pkgFile, JSON.stringify(pkg, null, 2) + '\n');
+      const yarn = existsSync(path.join(dir, 'yarn.lock'));
+      mh = yarn ? 'yarn mh' : 'npm run mh --';
+      console.log('✓ script "mh" en package.json');
+    }
+    console.log(GUIDE(rel, mh));
+    if (okReq && await confirm('¿Corro ahora el test de prueba (suite:smoke) con tu celu conectado?', true)) {
       const code = await runFlows(loadConfig(dir), 'suite:smoke', {});
-      console.log(code === 0 ? '\n✓ Todo funciona.' : '\nSi falló, corré `mh doctor` para ver qué falta.');
-    } else console.log('Cuando quieras: mh doctor  y después  mh run suite:smoke');
+      console.log(code === 0 ? '\n✓ Todo funciona.' : `\nSi falló, corré \`${mh} doctor\` para ver qué falta.`);
+    } else console.log(`Cuando quieras: ${mh} doctor  y después  ${mh} run suite:smoke`);
   } finally { ask?.close(); }
 }

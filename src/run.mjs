@@ -17,6 +17,12 @@ export async function doctor(cfg, opts = {}) {
   if (!findBin('maestro')) { L('✗ maestro no encontrado (https://docs.maestro.dev/getting-started/installing-maestro)'); return res; }
   const dev = await devices.resolve({ device: opts.device });
   if (dev.error) { L(`✗ ${dev.error}`); return res; }
+  const ping = devices.shx(dev.id, 'echo mh-ok');
+  if (!ping.out.includes('mh-ok')) {
+    L(`✗ El dispositivo ${dev.id} aparece en adb pero no responde a comandos: ${(ping.err || ping.out || 'sin salida').split('\n')[0]}`);
+    L('  Probá: adb kill-server && adb devices · revisá que la depuración USB esté autorizada · en MIUI/Samsung revisá el diálogo de seguridad del celu · cambiá de cable/puerto.');
+    return res;
+  }
   const prof = detect(dev.id);
   res.dev = dev; res.prof = prof;
   L(`✓ ${prof.info} · ${dev.transport}${dev.transport === 'wifi' ? ' ' + dev.id : ''} · perfil ${prof.profile.name}${dev.via !== 'direct' ? ` (reencontrado por ${dev.via})` : ''}`);
