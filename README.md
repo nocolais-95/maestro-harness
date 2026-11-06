@@ -22,6 +22,9 @@ Uso diario sin instalar nada global: `npx github:nocolais-95/maestro-harness doc
 - Sin git: `npm pack` genera `maestro-harness-0.1.0.tgz`; quien lo reciba corre `npx ./maestro-harness-0.1.0.tgz setup`.
 - Registry: `npm publish` y quedaría `npx maestro-harness setup`.
 
+## Una vez por USB, después por wifi
+La primera vez conectá el celu por USB: se instala el driver de Maestro (**queda en el celu**) y el harness activa wifi-adb y guarda el serial/IPs en `~/.maestro-harness/` (en tu Mac, no en el celu). Desde ahí puede reencontrarlo sin cable, también si cambiás de red. Límites: `adb tcpip` se pierde al **reiniciar el celu** (un USB rápido lo reactiva) y exige misma red sin aislamiento de clientes. Para que sobreviva reinicios: `mh wifi pair <ip:puerto> <código>` una vez (Android 11+, Depuración inalámbrica).
+
 ## Qué resuelve
 - **Dispositivo:** USB primero; si no, recupera por wifi (última IP → mDNS → escaneo de subred), verificando identidad por serial. Cambiar de red no requiere configurar nada.
 - **Perfiles OEM** (`profiles/*.json`): quirks por fabricante (MIUI: `--no-reinstall-driver`, ajustes de seguridad). Agregá un JSON para otro fabricante.

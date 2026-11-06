@@ -44,6 +44,19 @@ switch (cmd) {
     console.log(r.error || `${r.id} (${r.transport}, ${r.model}) vía ${r.via}${r.notes.length ? ' · ' + r.notes.join(', ') : ''}`);
     process.exit(r.error ? 2 : 0); break;
   }
+  case 'wifi': {
+    if (o.pos[0] === 'pair') {
+      if (!o.pos[2]) { console.error('uso: mh wifi pair <ip:puerto> <código>  (Ajustes → Opciones de desarrollador → Depuración inalámbrica → Vincular con código)'); process.exit(2); }
+      const r = devices.pair(o.pos[1], o.pos[2]);
+      console.log(r.ok ? '✓ Vinculado. Queda guardado en el celu: sobrevive reinicios y se reencuentra por mDNS.' : `✗ ${r.msg}`);
+      process.exit(r.ok ? 0 : 2);
+    }
+    const r = await devices.resolve({ device: o.device });
+    if (r.error) { console.log(r.error); process.exit(2); }
+    console.log((r.notes.find((n) => n.startsWith('wifi')) || `conectado por ${r.transport}`)
+      + '\nNota: el wifi-adb (tcpip) se pierde al reiniciar el celu; con USB se reactiva solo. Para que sobreviva reinicios: mh wifi pair <ip:puerto> <código> (Android 11+).');
+    break;
+  }
   case 'report': console.log(summarize(path.resolve(o.pos[0] || '.')).text); break;
   case 'profiles': for (const p of loadProfiles()) console.log(`${p.name}: ${(p.notes || []).join(' | ')}`); break;
   case 'setup': await setup({ yes: o.yes }); break;
@@ -61,6 +74,6 @@ switch (cmd) {
     break;
   }
   default:
-    console.log('mh setup [--yes] | doctor | run <spec> | devices | report <dir> | profiles | init');
+    console.log('mh setup [--yes] | doctor | wifi [pair <ip:puerto> <código>] | run <spec> | devices | report <dir> | profiles | init');
     process.exit(cmd ? 2 : 0);
 }

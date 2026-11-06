@@ -24,15 +24,20 @@ export function list() {
 const wlanIp = (id) =>
   (sh(id, 'ip -f inet addr show wlan0').match(/inet (\d+\.\d+\.\d+\.\d+)/) || [])[1] || null;
 
-/** Wifi-adb alias for a USB device: record its IP and enable tcpip once. */
-function ensureWifi(usb, serial) {
+/** Wifi-adb alias for a USB device: record its IP, enable tcpip once, verify. -> {ip, ok} */
+export function ensureWifi(usb, serial) {
   const ip = wlanIp(usb.id);
-  if (!ip) return null;
+  if (!ip) return { ip: null, ok: false };
   remember(serial, { ip, model: usb.model });
-  if (list().some((d) => d.id === `${ip}:5555` && d.state === 'device')) return ip;
-  adb(['-s', usb.id, 'tcpip', '5555'], 8000);
-  nw.connect(`${ip}:5555`);
-  return ip;
+  const up = () => list().some((d) => d.id === `${ip}:5555` && d.state === 'device');
+  if (!up()) { adb(['-s', usb.id, 'tcpip', '5555'], 8000); nw.connect(`${ip}:5555`); }
+  return { ip, ok: up() };
+}
+
+/** Android 11+: persistent "Depuración inalámbrica" (survives reboots after a one-time pairing). */
+export function pair(hostPort, code) {
+  const r = adb(['pair', hostPort, code], 20000);
+  return { ok: /successfully paired/i.test(r.out), msg: (r.out || r.err).split('\n')[0] };
 }
 
 /**
@@ -56,8 +61,8 @@ export async function resolve({ device, wifiAlias = true } = {}) {
     withSerial.sort((a, b) => (a.serial === wanted ? -1 : 0) - (b.serial === wanted ? -1 : 0) || rank(a) - rank(b));
     const d = withSerial[0];
     if (d.transport === 'usb' && wifiAlias) {
-      const ip = ensureWifi(d, d.serial);
-      if (ip) notes.push(`wifi alias ${ip}`);
+      const w = ensureWifi(d, d.serial);
+      notes.push(w.ok ? `wifi listo ${w.ip}` : w.ip ? `wifi no conectó (${w.ip})` : 'wifi del celu apagado o sin IP');
     } else {
       remember(d.serial, { ip: d.transport === 'wifi' ? d.id.split(':')[0] : undefined, model: d.model });
     }

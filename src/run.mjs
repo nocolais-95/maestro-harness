@@ -27,6 +27,8 @@ export async function doctor(cfg, opts = {}) {
   res.dev = dev; res.prof = prof;
   L(`✓ ${prof.info} · ${dev.transport}${dev.transport === 'wifi' ? ' ' + dev.id : ''} · perfil ${prof.profile.name}${dev.via !== 'direct' ? ` (reencontrado por ${dev.via})` : ''}`);
   for (const w of prof.warnings) L(`⚠ ${w}`);
+  const wn = (dev.notes || []).find((n) => n.startsWith('wifi'));
+  if (wn) L(wn.startsWith('wifi listo') ? `✓ ${wn}: ya podés desconectar el USB (las próximas veces se reencuentra solo, aun cambiando de red)` : `⚠ ${wn}: sin wifi-adb hace falta USB cada vez. Conectá el celu y la Mac a la misma red.`);
 
   const pk = devices.sh(dev.id, 'pm list packages dev.mobile.maestro');
   const driver = /dev\.mobile\.maestro\b/.test(pk) && /dev\.mobile\.maestro\.test/.test(pk);

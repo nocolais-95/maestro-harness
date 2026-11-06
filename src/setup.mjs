@@ -69,6 +69,9 @@ Cómo funciona
   • Tus tests viven en ${tests}/flows/<feature>/ y las listas en ${tests}/suites/*.txt
   • En los flows usá \${APP_ID} y \${DEV_CLIENT_URL}; nunca IPs.
   • Con un agente: decile "probá X en el celu"; la skill maestro-harness arma el flow, lo corre y te informa.
+  • Celu: la primera vez conectalo por USB (instala el driver de Maestro, que queda en el celu, y activa wifi-adb solo).
+    Después se reencuentra por wifi sin cable, aunque cambies de red. Si reiniciás el celu, un USB rápido lo reactiva
+    (o \`${mh} wifi pair\` una vez en Android 11+ para que sobreviva reinicios).
   • Si algo falla en un dispositivo raro, se registra en profiles/<fabricante>.json del harness.
 `;
 
