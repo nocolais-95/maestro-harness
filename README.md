@@ -5,11 +5,11 @@ Harness **opt-in** para pruebas E2E con [Maestro](https://maestro.dev) en celula
 ## Instalar en un proyecto (un comando)
 ```bash
 cd mi-proyecto
-npx github:<org>/maestro-harness setup     # o: npx ./maestro-harness-0.1.0.tgz setup
+npx github:nocolais-95/maestro-harness setup     # o: npx ./maestro-harness-0.1.0.tgz setup
 ```
 `setup` revisa requisitos (Node 18+, Maestro, adb, Java) con el comando de instalación de lo que falte, detecta appId/scheme/Metro de tu `app.json`, crea `maestro-harness.json` y `test/maestro/` con un test de prueba, ofrece instalar la skill y agentes de Claude Code en `.claude/`, ofrece registrar el MCP de Maestro, explica cómo funciona y pregunta si querés correr el test de prueba ahora. `--yes` acepta todo sin preguntar (CI/scripts).
 
-Uso diario sin instalar nada global: `npx github:<org>/maestro-harness doctor|run …`. Con `npm link` (o `npm i -g`) queda como `mh`.
+Uso diario sin instalar nada global: `npx github:nocolais-95/maestro-harness doctor|run …`. Con `npm link` (o `npm i -g`) queda como `mh`.
 
 ### Como plugin de Claude Code (alternativa)
 ```
