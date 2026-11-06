@@ -1,0 +1,6 @@
+{
+  "name": "samsung-oneui", "priority": 10,
+  "match": [{ "prop": "ro.product.manufacturer", "matches": "^samsung$" }],
+  "runFlags": [], "preflight": [],
+  "notes": ["Sin quirks verificados todavía. Posibles: Auto Blocker bloquea instalación vía USB; 'Instalar apps desconocidas'. Registrar acá lo que se descubra."]
+}

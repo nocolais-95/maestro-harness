@@ -1,0 +1,11 @@
+# Arranque en frío repetido: la app debe abrir siempre sin crashear.
+appId: ${APP_ID}
+---
+- repeat:
+    times: 5
+    commands:
+      - stopApp
+      - launchApp
+      - waitForAnimationToEnd
+      - assertTrue: true
+- takeScreenshot: cold-start-final

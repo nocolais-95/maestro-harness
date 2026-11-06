@@ -1,0 +1,6 @@
+{
+  "name": "pixel-aosp", "priority": 10,
+  "match": [{ "prop": "ro.product.manufacturer", "matches": "^google$" }],
+  "runFlags": [], "preflight": [],
+  "notes": ["Pixel/AOSP: sin quirks conocidos. Wireless debugging (mDNS) disponible desde Android 11."]
+}

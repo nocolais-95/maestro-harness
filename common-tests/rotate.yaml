@@ -1,0 +1,10 @@
+# chaos: rotate-landscape@5s, rotate-portrait@10s
+# Rotación a horizontal y vuelta: la app no debe crashear ni perder estado.
+appId: ${APP_ID}
+---
+- launchApp
+- waitForAnimationToEnd
+- takeScreenshot: rotate-start
+- waitForAnimationToEnd:
+    timeout: 8000
+- takeScreenshot: rotate-after

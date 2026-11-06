@@ -1,0 +1,15 @@
+# chaos: wifi-off@6s, wifi-on@18s
+# Requiere USB (cortar wifi mata adb-wifi). Corta la red a los 6 s y la restaura a los 18 s;
+# la app debe seguir viva y no quedar rota. Adaptá los asserts a la pantalla inicial del proyecto.
+appId: ${APP_ID}
+---
+- launchApp
+- waitForAnimationToEnd
+- takeScreenshot: wifi-online
+- extendedWaitUntil:
+    visible: ".*"
+    timeout: 12000
+- takeScreenshot: wifi-offline
+- waitForAnimationToEnd:
+    timeout: 12000
+- takeScreenshot: wifi-restored

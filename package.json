@@ -1,0 +1,9 @@
+{
+  "name": "maestro-harness",
+  "version": "0.1.0",
+  "description": "Opt-in Maestro E2E harness for mobile apps: device/network detection, OEM profiles, cheap runs, short reports.",
+  "type": "module",
+  "bin": { "mh": "bin/mh.mjs" },
+  "engines": { "node": ">=18" },
+  "license": "MIT"
+}

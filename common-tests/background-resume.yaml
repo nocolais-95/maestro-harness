@@ -1,0 +1,11 @@
+# Mandar a segundo plano y volver: la app debe recuperar su estado.
+appId: ${APP_ID}
+---
+- launchApp
+- waitForAnimationToEnd
+- takeScreenshot: before-background
+- pressKey: home
+- waitForAnimationToEnd
+- launchApp
+- waitForAnimationToEnd
+- takeScreenshot: after-resume

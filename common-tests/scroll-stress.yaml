@@ -1,0 +1,14 @@
+# Estrés de scroll largo arriba/abajo.
+appId: ${APP_ID}
+---
+- launchApp
+- waitForAnimationToEnd
+- repeat:
+    times: 20
+    commands:
+      - scroll
+      - scroll
+      - swipe:
+          direction: DOWN
+          duration: 120
+- takeScreenshot: scroll-after

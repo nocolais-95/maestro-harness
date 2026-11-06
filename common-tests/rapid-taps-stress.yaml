@@ -1,0 +1,17 @@
+# Estrés: taps y scrolls rápidos en el centro; la app no debe crashear ni congelarse.
+appId: ${APP_ID}
+---
+- launchApp
+- waitForAnimationToEnd
+- repeat:
+    times: 25
+    commands:
+      - tapOn:
+          point: 50%,50%
+      - swipe:
+          direction: UP
+          duration: 150
+      - swipe:
+          direction: DOWN
+          duration: 150
+- takeScreenshot: stress-after

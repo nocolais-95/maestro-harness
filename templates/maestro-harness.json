@@ -1,0 +1,8 @@
+{
+  "appId": "com.example.app",
+  "devClientScheme": "exp+example-app",
+  "metro": { "port": 8081, "command": "npx expo start --dev-client" },
+  "testsDir": "test/maestro",
+  "env": {},
+  "contextHints": ["docs/specs"]
+}

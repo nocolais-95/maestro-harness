@@ -1,0 +1,17 @@
+{
+  "name": "miui",
+  "priority": 10,
+  "match": [{ "prop": "ro.miui.ui.version.name" }],
+  "runFlags": ["--no-reinstall-driver"],
+  "preflight": [
+    {
+      "check": "prop", "key": "persist.security.adbinput", "expect": "1",
+      "onFail": "MIUI: activar 'Depuración USB (ajustes de seguridad)' en Opciones de desarrollador (pide cuenta Mi/SIM); sin eso los toques por adb/Maestro fallan (INJECT_EVENTS)."
+    }
+  ],
+  "notes": [
+    "El aviso 'Instalar vía USB' sale porque Maestro reinstala su driver; --no-reinstall-driver lo evita. Hace falta aceptarlo UNA vez para instalar el driver (sin root no se puede pre-aceptar).",
+    "INSTALL_FAILED_USER_RESTRICTED: no tocar restricciones del teléfono, avisar al usuario.",
+    "El USB se corta seguido: preferir alias wifi-adb."
+  ]
+}

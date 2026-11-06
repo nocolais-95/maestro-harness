@@ -1,0 +1,5 @@
+{
+  "name": "maestro-harness",
+  "owner": { "name": "Kairox" },
+  "plugins": [{ "name": "maestro-harness", "source": "./", "description": "Maestro E2E harness (opt-in)" }]
+}

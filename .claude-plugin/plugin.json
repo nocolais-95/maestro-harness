@@ -1,0 +1,7 @@
+{
+  "name": "maestro-harness",
+  "version": "0.1.0",
+  "description": "Opt-in Maestro E2E harness for mobile: device/network detection, OEM profiles, cheap runs, short reports.",
+  "author": { "name": "Kairox" },
+  "license": "MIT"
+}

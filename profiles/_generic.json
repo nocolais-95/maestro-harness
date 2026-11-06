@@ -1,0 +1,1 @@
+{ "name": "generic", "generic": true, "runFlags": [], "preflight": [], "notes": ["Android genérico/AOSP: sin quirks conocidos."] }

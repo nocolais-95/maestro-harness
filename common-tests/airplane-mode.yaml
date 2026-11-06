@@ -1,0 +1,10 @@
+# chaos: airplane-on@6s, airplane-off@18s
+# Requiere USB. Modo avión 12 s; la app debe sobrevivir y recuperarse.
+appId: ${APP_ID}
+---
+- launchApp
+- waitForAnimationToEnd
+- takeScreenshot: before-airplane
+- waitForAnimationToEnd:
+    timeout: 15000
+- takeScreenshot: after-airplane
